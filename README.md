@@ -1,11 +1,19 @@
 # PYTHON-AMAZON-SP-API
 
-![Tests](https://codebuild.eu-central-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiUXZBQ29Jd3NaNE45elZGRmdveVZMa0JCank4OGY4dnBMNDA3WGpsZXdpRXRTRHBKK1BvYmtneG00My8yYkdjdXc2S2VOeFBYcGN0VmxmVnhvZVIxZCtNPSIsIml2UGFyYW1ldGVyU3BlYyI6ImlnQUxNNlFZOVNWd0lRRlUiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 ## Amazon Selling-Partner API
 
 A wrapper to access **Amazon's Selling Partner API** with an easy-to-use interface.
 
+##### Supports [Data Kiosk](https://developer-docs.amazon.com/sp-api/v0/docs/data-kiosk-api-v2023-11-15-use-case-guide)
+
+---
+
+### Version 1 Upgrade notice
+
+Version 1 removes AWS IAM or AWS Signature Version 4 authentication.
+You can now use the library without AWS credentials.
+For compatibility reasons, you can still pass AWS credentials, but they are silently ignored.
 
 ### Q & A
 
@@ -18,10 +26,6 @@ or
 [![join on slack](https://img.shields.io/badge/slack-join%20on%20slack-orange?style=for-the-badge&logo=slack)](https://join.slack.com/t/sellingpartnerapi/shared_invite/zt-zovn6tch-810j9dBPQtJsvw7lEXSuaQ)
 
 ---
-### Freelance Work
-
-The library's author is looking for freelance work. [Contact](mailto:michael@saleweaver.com)
-
 
 ### Donate
 
@@ -33,6 +37,8 @@ The library's author is looking for freelance work. [Contact](mailto:michael@sal
 [![Badge](https://img.shields.io/pypi/v/python-amazon-sp-api?style=for-the-badge)](https://pypi.org/project/python-amazon-sp-api/)
 ```
 pip install python-amazon-sp-api
+pip install "python-amazon-sp-api[aws]" # if you want to use AWS Secret Manager Authentication.
+pip install "python-amazon-sp-api[aws-caching]" # if you want to use the Cached Secrets from AWS
 ```
 
 ---
@@ -41,10 +47,17 @@ pip install python-amazon-sp-api
 ```python
 from sp_api.api import Orders
 from sp_api.api import Reports
+from sp_api.api import DataKiosk
 from sp_api.api import Feeds
 from sp_api.base import SellingApiException
 from sp_api.base.reportTypes import ReportType
 from datetime import datetime, timedelta
+
+# DATA KIOSK API
+client = DataKiosk()
+
+res = client.create_query(query="{analytics_salesAndTraffic_2023_11_15{salesAndTrafficByAsin(startDate:\"2022-09-01\" endDate:\"2022-09-30\" aggregateBy:SKU marketplaceIds:[\"ATVPDKIKX0DER\"]){childAsin endDate marketplaceId parentAsin sales{orderedProductSales{amount currencyCode}totalOrderItems totalOrderItemsB2B}sku startDate traffic{browserPageViews browserPageViewsB2B browserPageViewsPercentage browserPageViewsPercentageB2B browserSessionPercentage unitSessionPercentageB2B unitSessionPercentage}}}}")
+print(res)
 
 # orders API
 try:
@@ -60,7 +73,7 @@ createReportResponse = Reports().create_report(reportType=ReportType.GET_MERCHAN
 # submit feed
 # feeds can be submitted like explained in Amazon's docs, or simply by calling submit_feed
 
-Feeds().submit_feed(self, <feed_type>, <file_or_bytes_io>, content_type='text/tsv', **kwargs)
+Feeds().submit_feed(<feed_type>, <file_or_bytes_io>, content_type='text/tsv', **kwargs)
 
 # PII Data
 
@@ -77,22 +90,9 @@ orders = Orders().get_orders(
 
 ### Documentation
 
-Documentation is available [here](https://sp-api-docs.saleweaver.com/?utm_source=github&utm_medium=repo&utm_term=text)
+Documentation is available [here](https://python-amazon-sp-api.readthedocs.io/en/latest/)
 
-[![Documentation Status](https://img.shields.io/readthedocs/python-amazon-sp-api?style=for-the-badge)](https://sp-api-docs.saleweaver.com/?utm_source=github&utm_medium=repo&utm_term=badge)
-
-### Consultation
-
-Do you need help implementing? I offer consultation for everything SP-API related. 
-
-[![Consultation](https://img.shields.io/badge/consultation-book-blue?style=for-the-badge)](https://calendly.com/michaelprimke/sp-api)
-
-
-### Playground
-
-[![playground](https://img.shields.io/badge/Playground-alpha-red?style=for-the-badge)](https://sp-api-playground.saleweaver.com/?utm_source=github&utm_medium=repo&utm_term=badge)
-
-<sub>_The playground is a work in progress and currently in alpha. Please report bugs in this repository_</sub>
+[![Documentation Status](https://img.shields.io/readthedocs/python-amazon-sp-api?style=for-the-badge)](https://python-amazon-sp-api.readthedocs.io/en/latest/index.html)
 
 
 ### New endpoints
@@ -137,8 +137,10 @@ The client is pretty extensible and can be used for any other API. Check it out 
 
 
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=bugs)](https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api)
+
+[//]: # ([![Code Smells]&#40;https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=code_smells&#41;]&#40;https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api&#41;)
+
+[//]: # ([![Technical Debt]&#40;https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=sqale_index&#41;]&#40;https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api&#41;)
 
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=saleweaver_python-amazon-sp-api&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=saleweaver_python-amazon-sp-api)
@@ -148,3 +150,4 @@ The client is pretty extensible and can be used for any other API. Check it out 
 [![Downloads](https://static.pepy.tech/badge/python-amazon-sp-api)](https://pepy.tech/project/python-amazon-sp-api)
 [![Downloads](https://static.pepy.tech/badge/python-amazon-sp-api/month)](https://pepy.tech/project/python-amazon-sp-api)
 [![Downloads](https://static.pepy.tech/badge/python-amazon-sp-api/week)](https://pepy.tech/project/python-amazon-sp-api)
+

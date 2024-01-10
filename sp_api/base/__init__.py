@@ -1,4 +1,3 @@
-from .aws_sig_v4 import AWSSigV4
 from .base_client import BaseClient
 from .client import Client
 from .helpers import fill_query_params, sp_endpoint, create_md5, nest_dict, _nest_dict_rec, deprecated
@@ -17,7 +16,7 @@ from .schedules import Schedules
 from .report_status import ReportStatus
 from .sales_enum import FirstDayOfWeek, Granularity, BuyerType
 from .fulfillment_channel import FulfillmentChannel
-
+from .included_data import IncludedData, ListingItemsIncludedData, CatalogItemsIncludedData
 from .notifications import NotificationType
 from .credential_provider import CredentialProvider, MissingCredentials
 from .ApiResponse import ApiResponse
@@ -27,6 +26,8 @@ from .feedTypes import FeedType
 from sp_api.auth import AccessTokenClient, Credentials
 from sp_api.auth.exceptions import AuthorizationError
 from sp_api.base.inegibility_reasons import IneligibilityReasonList
+from .marketplaces import AwsEnv
+
 
 __all__ = [
     'Credentials',
@@ -38,7 +39,6 @@ __all__ = [
     'ApiResponse',
     'Client',
     'BaseClient',
-    'AWSSigV4',
     'Marketplaces',
     'fill_query_params',
     'sp_endpoint',
@@ -65,5 +65,9 @@ __all__ = [
     'MissingCredentials',
     'nest_dict',
     '_nest_dict_rec',
-    'IneligibilityReasonList'
+    'IneligibilityReasonList',
+    'IncludedData',
+    'ListingItemsIncludedData',
+    'CatalogItemsIncludedData',
+    'AwsEnv'
 ]

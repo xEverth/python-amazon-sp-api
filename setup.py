@@ -7,12 +7,12 @@ setup(
     version=__version__,
     install_requires=[
         "requests",
-        "boto3>=1.16.39",
         "cachetools>=4.2",
         "confuse>=1.4"
     ],
     extras_require={
-        "aws-caching": ["aws-secretsmanager-caching"],
+        "aws-caching": ["aws-secretsmanager-caching", "boto3"],
+        "aws": ["boto3"]
     },
     packages=['tests', 'tests.api', 'tests.api.orders', 'tests.api.sellers', 'tests.api.finances',
               'tests.api.product_fees', 'tests.api.notifications', 'tests.api.reports', 'tests.client',
@@ -33,12 +33,14 @@ setup(
               'sp_api.api.upload',
               'sp_api.api.merchant_fulfillment',
               'sp_api.api.fulfillment_inbound',
+              'sp_api.api.data_kiosk',
+              'sp_api.api.replenishment',
+              'sp_api.api.supply_sources',
               'sp_api.auth',
               'sp_api.base',
               'sp_api.util',
-                ##### DO NOT DELETE ########## INSERT PACKAGE HERE #######
+              ##### DO NOT DELETE ########## INSERT PACKAGE HERE #######
               'sp_api.api.listings_restrictions',
-
 
               'sp_api.api.catalog_items',
               'sp_api.api.product_type_definitions',
@@ -61,6 +63,7 @@ setup(
               'sp_api.api.authorization',
               'sp_api.api.aplus_content',
               'sp_api.api.fulfillment_outbound',
+              'sp_api.api.application_management',
               ],
     scripts=['make_endpoint/make_endpoint'],
     url='https://github.com/saleweaver/python-amazon-sp-api',
@@ -69,4 +72,3 @@ setup(
     author_email='info@saleweaver.com',
     description='Python wrapper for the Amazon Selling-Partner API'
 )
-

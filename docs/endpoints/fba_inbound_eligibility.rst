@@ -1,5 +1,6 @@
 FbaInboundEligibility
 =====================
     
-    
-..  autoclass:: sp_api.api.FbaInboundEligibility
+
+
+.. autoclass:: sp_api.api.FbaInboundEligibility

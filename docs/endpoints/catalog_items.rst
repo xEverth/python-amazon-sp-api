@@ -1,5 +1,6 @@
 CatalogItems
 ============
+
+
     
-    
-..  autoclass:: sp_api.api.CatalogItems
+.. autoclass:: sp_api.api.CatalogItems

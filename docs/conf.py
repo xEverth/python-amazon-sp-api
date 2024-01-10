@@ -3,7 +3,7 @@
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-
+import inspect
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -12,8 +12,15 @@
 #
 # import os
 # import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
 
+sys.path.insert(0, os.path.abspath('.'))
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+import sp_api
 
 # -- Project information -----------------------------------------------------
 
@@ -27,8 +34,9 @@ author = 'Michael Primke'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx_rtd_theme",
+    "sphinx_rtd_theme", 'button', 'cookieconsent',
     'sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.napoleon',
+    'enum_tools.autoenum',
 
 ]
 
@@ -54,3 +62,19 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
+napoleon_include_init_with_doc = False
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = True
+napoleon_use_admonition_for_notes = True
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_preprocess_types = False
+napoleon_type_aliases = None
+napoleon_attr_annotations = True

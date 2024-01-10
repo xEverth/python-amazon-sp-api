@@ -6,8 +6,7 @@ import os
 from typing import Dict, Iterable, Optional, Type
 
 import confuse
-import boto3
-from botocore.exceptions import ClientError
+
 from cachetools import Cache
 
 try:
@@ -88,9 +87,6 @@ class BaseFromSecretsCredentialProvider(BaseCredentialProvider):
             refresh_token=secret.get('SP_API_REFRESH_TOKEN'),
             lwa_app_id=secret.get('LWA_APP_ID'),
             lwa_client_secret=secret.get('LWA_CLIENT_SECRET'),
-            aws_secret_key=secret.get('SP_API_SECRET_KEY'),
-            aws_access_key=secret.get('SP_API_ACCESS_KEY'),
-            role_arn=secret.get('SP_API_ROLE_ARN')
         )
 
     @abc.abstractmethod
@@ -99,11 +95,18 @@ class BaseFromSecretsCredentialProvider(BaseCredentialProvider):
 
 
 class FromSecretsCredentialProvider(BaseFromSecretsCredentialProvider):
+
     def get_secret_content(self, secret_id: str) -> Dict[str, str]:
         try:
+            import boto3
+            from botocore.exceptions import ClientError
+
             client = boto3.client('secretsmanager')
             response = client.get_secret_value(SecretId=secret_id)
             return json.loads(response.get('SecretString'))
+        except ImportError:
+            print('boto3 not found')
+            return {}
         except ClientError:
             return {}
 
@@ -114,6 +117,7 @@ class FromCachedSecretsCredentialProvider(BaseFromSecretsCredentialProvider):
         secret_cache = self._get_secret_cache()
         if not secret_cache:
             return {}
+        from botocore.exceptions import ClientError
         try:
             response = secret_cache.get_secret_string(secret_id=secret_id)
             return json.loads(response)
@@ -134,9 +138,6 @@ class FromEnvironmentVariablesCredentialProvider(BaseCredentialProvider):
             refresh_token=self._get_env('SP_API_REFRESH_TOKEN'),
             lwa_app_id=self._get_env('LWA_APP_ID'),
             lwa_client_secret=self._get_env('LWA_CLIENT_SECRET'),
-            aws_secret_key=self._get_env('SP_API_SECRET_KEY'),
-            aws_access_key=self._get_env('SP_API_ACCESS_KEY'),
-            role_arn=self._get_env('SP_API_ROLE_ARN')
         )
         self.credentials = account_data
 
@@ -181,6 +182,3 @@ class CredentialProvider:
             self.refresh_token = kwargs.get('refresh_token')
             self.lwa_app_id = kwargs.get('lwa_app_id')
             self.lwa_client_secret = kwargs.get('lwa_client_secret')
-            self.aws_access_key = kwargs.get('aws_access_key')
-            self.aws_secret_key = kwargs.get('aws_secret_key')
-            self.role_arn = kwargs.get('role_arn')
